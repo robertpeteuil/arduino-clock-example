@@ -1,5 +1,7 @@
 This is a simple Arduino project that reads the time from a DS1307 module and displays it on a 7-Segment Display.
 
+NOTE:  This was written on Arduino 23.  If Arduino 1.0 (or later) is used, the I2C commands would need to be changed to thier new format.  This should only impact the RTC functions.  Future revisions of this code may add conditional compilation for Arduino 1.0.
+
 This project was selected as a proof of concept as I switched IDEs, implemented new modular hardware design, and implemented source code versioning.  Since the code was not the primary purpose of the project, while functional, it probably has room for substantial cleanup in the alorythms used.
 
 The projects is broken out in many functions, which are cleanly seperated out by device (7-Segment Display functions, RTC functions, UART functions, etc...)   This should make it easy for others to leverage the functions and processes that I've used in their own projects.
