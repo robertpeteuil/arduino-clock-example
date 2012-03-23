@@ -1,14 +1,11 @@
 This is a simple Arduino project that reads the time from a DS1307 module and displays it on a 7-Segment Display.
 
-This project was selected as a proof of concept as I switched IDEs, implemented new modular hardware design, and 
-implemented source code versioning.  Since the code was not the primary purpose of the project, while functional, it probably has room for substantial
+This project was selected as a proof of concept as I switched IDEs, implemented new modular hardware design, and implemented source code versioning.  Since the code was not the primary purpose of the project, while functional, it probably has room for substantial
 cleanup in the alorythms used.
 
-The projects is broken out in many functions, which are cleanly seperated out by device (7-Segment Display functions,
-RTC functions, UART functions, etc...)   THis should make it easy for others to leverage the functions and processes
+The projects is broken out in many functions, which are cleanly seperated out by device (7-Segment Display functions, RTC functions, UART functions, etc...)   THis should make it easy for others to leverage the functions and processes
 that I've used in their own projects.
 
-Note, the project works with both the 'old' and 'new' version of Sparkfun's Serial 7-Segment display.  
-The moduled differ in the characters they can display, the functions they support, and even the brightness settings.
+Note, the project works with both the 'old' and 'new' version of Sparkfun's Serial 7-Segment display. The moduled differ in the characters they can display, the functions they support, and even the brightness settings.
 So, conditional complication was used to set functions for the proper device.
     The appropriate device should be #defined in the SSclockInits.h file.
