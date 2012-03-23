@@ -63,7 +63,6 @@ void setup() {
         NVRAMbrightness = SSdataBrightness;             //    set default Brightness Value                                                           
         NVRAMsound = 2;                                 //    set default Sound Values (0=no sound, 1=sound in menu, 2=normal sound, 3=hourly beeps) 
         RTCsetData();                                   //    Call function to write these defaults to the NVRAM                                     
-        // REDUNDANT with line 59 - 
     }
 
     // Startup Animations - for bling value only
@@ -96,7 +95,7 @@ void MENUset() {
     // Prepare the environment
         detachInterrupt(1);                             // TURN OFF interrupt on the menu button, since we're already in the menu
         SSprintTime(true, true);                        // print the time in 24 hour format
-        SPKeffect();                                    // Click twice to acknowledge entering menu mode
+        SPKeffect();                                    // Click speaker to acknowledge entering menu mode
     
     // Initialize local varibles used in this function
         char NEWminute, NEWhour;                        // temporarily holds new time settings
@@ -183,7 +182,7 @@ void MENUset() {
         SSserial.print(SScmdColon, BYTE);                       
         SSserial.print(0x00, BYTE);                     // Turn the colon and all dots off
         SSserial.print(SScmdReset);                     // Reset the Display
-        SSserial.print(SSdataMenuBrightness);                           // print "br" to identify brightness setting
+        SSserial.print(SSdataMenuBrightness);           // print "br" to identify brightness setting
         if (NewBrightness < 10) SSserial.print("0");    // If NVRAMbrightness is < 10 then print a 0 first
         SSserial.print(NewBrightness, DEC);             // print the brightness value (in Hex so it fits in 2 digits)
         while (1) {
@@ -199,9 +198,9 @@ void MENUset() {
                 NewBrightness++;                        // increment the brightness
                 if (NewBrightness>99) NewBrightness = 1;// If the brightness is more than 2 digits rollover to zero   
                 ScaledBrightness = map(NewBrightness, 1, 99, 1, 254);   // remap the brightness value of 1-99 to 1-254
-                SSsetBrightness(ScaledBrightness);         // Set the brightness using the new value
+                SSsetBrightness(ScaledBrightness);      // Set the brightness using the new value
                 SSserial.print(SScmdReset);             // Reset the Display
-                SSserial.print(SSdataMenuBrightness);                   // print "br" to identify brightness setting
+                SSserial.print(SSdataMenuBrightness);   // print "br" to identify brightness setting
                 if (NewBrightness < 10) SSserial.print("0");// If NVRAMbrightness is < 10 then print a 0 first
                 SSserial.print(NewBrightness, DEC);     // print the brightness value (its 0-99 so it fits in 2 digits)
             }
@@ -210,7 +209,7 @@ void MENUset() {
                                                                                                                       
     // MODE = sounds                                                                                                  
         SSserial.print(SScmdReset);                                                                                   
-        SSserial.print(SSdataMenuSound);                          // print "Snd" to identify Sound Setting                              
+        SSserial.print(SSdataMenuSound);                // print "Snd" to identify Sound Setting                              
         SSserial.print(NewSound, DEC);                  // print the Sound Configuration value                                
         while (1) {                                                                                                   
             BTNpollAll();                               // poll the buttons                                                   
@@ -225,7 +224,7 @@ void MENUset() {
                 NewSound++;                             // increment the sound setting value                                  
                 if (NewSound>3) NewSound = 0;           // If the sound setting is > 3 then rollover to zero                  
                 SSserial.print(SScmdReset);
-                SSserial.print(SSdataMenuSound);                  // print "Snd" to identify Sound Setting 
+                SSserial.print(SSdataMenuSound);        // print "Snd" to identify Sound Setting 
                 SSserial.print(NewSound, DEC);          // print the Sound Configuration value                   
             }
         }  
@@ -246,7 +245,7 @@ void BTNpollAll() {
     // Polls all the buttons, sets state variables, sets debounce timers, and set output flags
     if (digitalRead(BTN1PIN) == LOW) {                  // Button 1 is pressed            
             if (BTN1state) {                            // Was button #1 state set?       
-                if ((millis() - BTN1time) > BTNdebounce) {   // If so, has it been down longer than the debounce time?
+                if ((millis() - BTN1time) > BTNdebounce) { // If so, has it been down longer than the debounce time?
                     if (BTN1released) {                 // Has the button been released sine the last flagging?  
                         BTN1flag = true;                                                                         
                         BTN1state = false;              // Clear button #1 state for next time                   
@@ -266,7 +265,7 @@ void BTNpollAll() {
         
     if (digitalRead(BTN2PIN) == LOW) {                  // Button 2 is pressed           
             if (BTN2state) {                            // Was button #2 state set?      
-                if ((millis() - BTN2time) > BTNdebounce) {   // If so, has it been down longer than the debounce time?
+                if ((millis() - BTN2time) > BTNdebounce) { // If so, has it been down longer than the debounce time?
                     BTN2flag = true;
                     BTN2state = false;                  // Clear button #2 state for next time                 
                 }                                                                                              

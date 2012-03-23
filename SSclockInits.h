@@ -1,7 +1,6 @@
 /* 7-Segment Display Clock   (azrobbo)
 
     Current Version
-        2.15 - Changed Pin assignments, Added scaled brightness, Removed Button 3, Added Clock Enable to Setup, fixed brightness menu, added menu string for module versions
         2.16 - Added to Github 
          
         Detailed changelog at bottom (of this file)
@@ -15,7 +14,7 @@
 #include "WProgram.h"
 #endif
 
-#define VERSION 15
+#define VERSION 16
 
 // Define hardware module being used - make sure only one is uncommented
     // Original 7-Segment Display (Pins on sides) - Sparkfun Part # COM-09230
