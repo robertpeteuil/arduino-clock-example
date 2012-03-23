@@ -22,7 +22,7 @@
 NewSoftSerial SSserial(SSRXPIN, SSTXPIN);               // 7-Segment Display module connected on pin 5 (Tx only)                      
 
 void interruptUpdatePulse() {
-    // interrupt handler - Timer driven interrupt
+    // interrupt handler - driven by external square wave at 1Hz 
     SSflagNeedsUpdate = true;                           // Set 7-Segment Display Update Flag
 }
 
@@ -123,10 +123,10 @@ void MENUset() {
                 SSflagNeedsUpdate = false;              // clear the update flag                 
             }
             BTNpollAll();                               // poll the buttons
-            if (BTN1flag) {
-                BTN1flag = false;                       // clear the button flag   
+            if (BTN1flag) {                             // Button 1 was pressed
+                BTN1flag = false;                       // clear the button 1 flag   
                 SPKeffect();                            // Click the speaker                                    
-                break;                                  // Button #1 was pressed, break out of the Hours Mode loop     
+                break;                                  // Since button #1 was pressed, break out of the Hours Mode loop     
             }                                                                                                    
             if (BTN2flag) {                             // Button #2 was pressed                                       
                 BTN2flag = false;                       // clear the button flag  
@@ -284,14 +284,14 @@ void SSprintTime() {
 }
 
 void SSprintTime(boolean AlwaysPrint) {
-    // Call the main function, but passes along the 2 optional parameter
+    // Call the main function, but passes along the second optional parameter
     SSprintTime(AlwaysPrint, false);
 }
 
 void SSprintTime(boolean AlwaysPrint, boolean TFHtime) {
     //	Prints the time to the 7-Segment Display
     //  Only print if the display time has changed, or optional 'true' paramter has been passed to force print
-    //  TFHtime controls whether the time is displayed in 12 or 24 hour format.  (24 is used when setting the clock)
+    //  TFHtime stands for 24-hour time, as 24 hour formatting is used when setting the clock
     char DISPLAYEDhour; // This holds the hour value that is actually displayed, allows to adjust for 12 hour display, and midnight
 
     if (((SSdisplayedHour != RTChour) || (SSdisplayedMinute != RTCminute)) || (AlwaysPrint)) {    // Run if display time is NOT current
@@ -374,7 +374,7 @@ void UARTprocessInput() {
         NVRAMbrightness = SSdataBrightness;
         SSsetBrightness();
     }
-    else if (command == 87 || command == 119) {         // Set Square Wave output = W for "Wave"
+    else if (command == 87 || command == 119) {         // Turn on DS1307 Square Wave output = W for "Wave"
         RTCconfigSqWave();
     }
     else if (command == 72 || command == 104) {         // Set hardcoded values = H for "Hard-coded"
@@ -387,7 +387,7 @@ void UARTprocessInput() {
 
 void UARTgetTime() {
     //	Allows for setting the time on the 1307 via a UART String
-    //    	converts the chars into time variables, then sends this data to the DS1307
+    //    	converts the chars into time variables
     //    Bit 7 of register 0 is the clock halt (CH) bit. (1 = oscillator disabled)
     //    Bit 6 of the hours register is defined as the 12- or 24-hour mode select bit. (1 = 12-hour mode).
     //          In the 12-hour mode, bit 5 is the AM/PM bit with logic high being PM.
@@ -532,11 +532,11 @@ void SPKeffect(char x, char y) {
    
     for (int i = 1; i <= y; i++) {
    
-        if (x == 0) {       // "Click" sounds
+        if (x == 0) {                                   // "Click" sounds
             tone(SPKPIN, 784);
             delay(15);
         }
-        if (x == 1) {       // "Acknowledged" Sound
+        if (x == 1) {                                   // "Acknowledged" Sound
             tone(SPKPIN, 523);
             delay(100);
             noTone(SPKPIN); 
@@ -544,7 +544,7 @@ void SPKeffect(char x, char y) {
             tone(SPKPIN, 784);
             delay(50);
         }
-        if (x == 2) {       // Play quick tone at setup so initialization can be heard
+        if (x == 2) {                                   // Play quick tone at setup so initialization can be heard
             tone(SPKPIN, 523);
             delay(150);
             noTone(SPKPIN);
@@ -555,10 +555,10 @@ void SPKeffect(char x, char y) {
             tone(SPKPIN, 784);
             delay(75);
         }
-        if (x == 3) {       // "Chimes" that repeats 'y' times
+        if (x == 3) {                                   // "Chimes" that repeats 'y' times
             tone(SPKPIN, 523);
             delay(100);
-            noTone(SPKPIN);         // pause between chimes
+            noTone(SPKPIN);                             // pause between chimes
             delay(500);
             }
             
