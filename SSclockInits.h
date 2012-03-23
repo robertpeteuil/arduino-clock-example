@@ -19,10 +19,10 @@
 // Define hardware module being used - make sure only one is uncommented
     // Original 7-Segment Display (Pins on sides) - Sparkfun Part # COM-09230
     //      This device prints '0' - '9' and 'a' - 'f' only; it supports brightness settings, and dot/command control
-    #define SS_HWMOD_ORIGINAL   
+    // #define SS_HWMOD_ORIGINAL   
     
     // Updated design (pins on top) - Sparkfun Part # COM-09764
-    // #define SS_HWMOD_UPDATED          
+    #define SS_HWMOD_UPDATED          
  
 // DEBUG MODE SETTING
     // #define DEBUGMODE
