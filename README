@@ -1,0 +1,11 @@
+This is a simple Arduino project that reads the time from a DS1307 module and displays it on a 7-Segment Display.  This project is a combination of many 'simple' examples.  Accessing a module via I2C, parsing a serial stream to get user data, using square wave pulses to trigger interrupts for screen updating, using interrupts with a button to trigger a menu, button de-bounce (for the 2nd button), and storing data in non-volatile memory via I2C. 
+
+As you can see what started as a simple project grew to eventually encompass a lot of other functions.  The functions are seperated and named by device: 7-Segment Display, RTC, UART, Menu, etc...   I spent a lot of time commenting it, and breaking it up into many different functions so it could be more easily used by others.  However, due to this, the code grew to over 600 lines.  
+
+Arduino 1.0 note:  This was written on Arduino 23.  SO if used on Arduino 1.0 (or later), the I2C commands need to be changed to the new format.  This should only impact the RTC functions. (functions that begin with RTC.)  Future revisions of this code will add conditional compilation for Arduino 1.0, a better "chime" sound to optionally be played on the hour, and possible syncronization via GPS time daily.
+
+Sparkfun 7-Segment Module Version Note:  The project works with both the 'old' and 'new' version of Sparkfun's Serial 7-Segment display. The module versions differ in several ways:  the characters they can display, the commands they support, and even the brightness level (for a given setting).  So, conditional complication is used to set variables/defines for the proper device.  make sure the appropriate device is #defined in the SSclockInits.h file.
+
+
+
+
