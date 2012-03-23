@@ -56,10 +56,10 @@ void setup() {
     SSserial.begin(9600);                               // Init 7-segment display comms via Software Serial                                          
                                                                                                                                                      
     // Read config data from DS1307           
-    RTCconfigSqWave();                                                                                                    
-    RTCreadData();                                      // Read variables from RTC NVRAM: SS Brightness and Sound Effect Settings                    
-                                                                                                                                                     
-    if (NVRAMcheckbyte != RTCcheckbyte) {               // If the checkbyte read does not equal the value we expected                                
+    RTCconfigSqWave();                                  // Turn on the RTC Square Wave Output (this could be a new module)                                                                
+    
+    RTCreadData();                                      // Read variables from RTC NVRAM: SS Brightness, Sound Effect Settings, and RTCcheckbyte
+    if (NVRAMcheckbyte != RTCcheckbyte) {               // If the checkbyte read does not equal the value we expected the the Vars need to be set                             
         NVRAMbrightness = SSdataBrightness;             //    set default Brightness Value                                                           
         NVRAMsound = 2;                                 //    set default Sound Values (0=no sound, 1=sound in menu, 2=normal sound, 3=hourly beeps) 
         RTCsetData();                                   //    Call function to write these defaults to the NVRAM                                     
@@ -71,7 +71,7 @@ void setup() {
                                                                                                         
     // put clock data on 7-Segment Display                                                              
     RTCreadTime();                                      // read the time & populate time vars           
-    RTCconfigClkEnable();   
+    RTCconfigClkEnable();                               // Make sure the clock enable bit is set (this could be a new module)
     SSprintTime();                                      // output time to 7-segment display             
 }                                                                                                       
                                                                                                         
@@ -93,15 +93,15 @@ void MENUset() {
     // Enters a menu to allow for setting of time, brightness, and sounds
     
     // Prepare the environment
-        detachInterrupt(1);                             // TURN OFF interrupt on the menu button, since we're already in the menu
-        SSprintTime(true, true);                        // print the time in 24 hour format
+        detachInterrupt(1);                             // Turn off interrupt on the menu button, since we're already in the menu
+        SSprintTime(true, true);                        // Print the time in 24 hour format
         SPKeffect();                                    // Click speaker to acknowledge entering menu mode
     
     // Initialize local varibles used in this function
-        char NEWminute, NEWhour;                        // temporarily holds new time settings
-            NEWminute = RTCminute;                      // set new hours/minute vars to current value
+        char NEWminute, NEWhour;                        // Temporarily holds new time settings
+            NEWminute = RTCminute;                      // Set new hours/minute vars to current value
             NEWhour = RTChour;
-        byte NewBrightness, ScaledBrightness, NewSound; // temporarily holds new brightness & sound settings
+        byte NewBrightness, ScaledBrightness, NewSound; // Temporarily holds new brightness & sound settings
             NewBrightness = NVRAMbrightness;            // Set new brightness variable to existing value
             NewSound = NVRAMsound;                      // Set new sound variable to existing value
 
@@ -109,32 +109,32 @@ void MENUset() {
         while (1) {                                     // Hours Mode Loop - loop until a break is encountered
             if (SSflagNeedsUpdate) {                    // Blink the hours digits on/off so user knows what's being set
                 SSprintColon(true);                     // Print Colon Symbol
-                if (SSflagVisibility) {                 // it's VISIBLE
-                    SSprintTime(true, true);            // call function to display time in 24 hour mode
+                if (SSflagVisibility) {                 // It's VISIBLE
+                    SSprintTime(true, true);            // Call function to display time in 24 hour mode
                     SSflagVisibility = false;           // Clear the visibility flag
                 }
                 else {                                  // HOURS digits are NOT visible
-                    SSserial.print(SSdataBlankDigit);   // print 2 blank digits where hours would be
+                    SSserial.print(SSdataBlankDigit);   // Print 2 blank digits where hours would be
                     SSserial.print(SSdataBlankDigit);
                     if (RTCminute < 10) SSserial.print("0");  // If the minute is between 1 and 9 then print a 0 first
                     SSserial.print(RTCminute, DEC);
-                    SSflagVisibility = true;            // toggle the visibility flag
+                    SSflagVisibility = true;            // Toggle the visibility flag
                 }
-                SSflagNeedsUpdate = false;              // clear the update flag                 
+                SSflagNeedsUpdate = false;              // Clear the update flag                 
             }
-            BTNpollAll();                               // poll the buttons
+            BTNpollAll();                               // Poll the buttons
             if (BTN1flag) {                             // Button 1 was pressed
-                BTN1flag = false;                       // clear the button 1 flag   
+                BTN1flag = false;                       // Clear the button 1 flag   
                 SPKeffect();                            // Click the speaker                                    
                 break;                                  // Since button #1 was pressed, break out of the Hours Mode loop     
             }                                                                                                    
             if (BTN2flag) {                             // Button #2 was pressed                                       
-                BTN2flag = false;                       // clear the button flag  
+                BTN2flag = false;                       // Clear the button flag  
                 SPKeffect();                            // Click the speaker                                     
-                NEWhour++;                              // increment the hour                                          
+                NEWhour++;                              // Increment the hour                                          
                 if (NEWhour>23) NEWhour = 0;            // If the hours is set to 24, then rollover to zero    
                 RTChour = NEWhour;                
-                SSprintTime(true, true);                // print the new time value, pass 2nd true param forcing 24 hour format
+                SSprintTime(true, true);                // Print the new time value, pass 2nd true param forcing 24 hour format
             }
         }
 	    SSflagVisibility = false;                       // Clear the visibility flag
@@ -143,101 +143,101 @@ void MENUset() {
         while (1) {                                     // Minute Mode Loop - loop until a break is encountered
             if (SSflagNeedsUpdate) {                    // Blink the minutes digit on/off so user knows what's being set
                 if (SSflagVisibility) {                 // it's VISIBLE
-                    SSprintTime(true, true);            // call function to display time in 24 hour mode
+                    SSprintTime(true, true);            // Call function to display time in 24 hour mode
                     SSflagVisibility = false;           // Clear the visibility flag
                 }
                 else {                                  // MINUTES digits are NOT visible
-                    SSserial.print(SScmdReset);         // resets the 7-segment display
+                    SSserial.print(SScmdReset);         // Resets the 7-segment display
                     SSprintColon(true);                         
                     if (RTChour < 10) SSserial.print(SSdataBlankDigit); // If the hour is between 1 and 9 then print a space first
                     SSserial.print(RTChour, DEC);
-                    SSserial.print(SSdataBlankDigit);   // print 2 blank digits where the minutes digits would be
+                    SSserial.print(SSdataBlankDigit);   // Print 2 blank digits where the minutes digits would be
                     SSserial.print(SSdataBlankDigit);
-                    SSflagVisibility = true;            // toggle the visibility flag
+                    SSflagVisibility = true;            // Toggle the visibility flag
                 }
-                SSflagNeedsUpdate = false;              // clear the update flag                 
+                SSflagNeedsUpdate = false;              // Clear the update flag                 
             }
-            BTNpollAll();                               // poll the buttons
+            BTNpollAll();                               // Poll the buttons
             if (BTN1flag) {
-                BTN1flag = false;                       // clear the button flag     
+                BTN1flag = false;                       // Clear the button flag     
                 SPKeffect();                            // Click the speaker                                  
                 break;                                  // Button #1 was pressed, break out of the Minutes Mode loop     
             }                                                                                                    
             if (BTN2flag) {                             // Button #2 was pressed                                       
-                BTN2flag = false;                       // clear the button flag     
+                BTN2flag = false;                       // Clear the button flag     
                 SPKeffect();                            // Click the speaker                                  
-                NEWminute++;                            // increment the minutes                                          
+                NEWminute++;                            // Increment the minutes                                          
                 if (NEWminute>59) NEWminute = 0;        // If the minutes is set to 60, then rollover to zero   
                 RTCminute = NEWminute;                
-                SSprintTime(true, true);                // print the new time value   
+                SSprintTime(true, true);                // Print the new time value   
             }
         }
 
         // Wrap-up 'minutes adjustment mode' - write the new time values to the RTC, and play 'acknowledged' sound effect
-            RTCsecond = 0;                              // clear the second variable
-            RTCsetTime();                               // call function to write the new time to the RTC
+            RTCsecond = 0;                              // Clear the second variable
+            RTCsetTime();                               // Call function to write the new time to the RTC
             SPKeffect();                                // Play "acknowledged" sound
 
     // MODE = brightness
         SSserial.print(SScmdColon, BYTE);                       
         SSserial.print(0x00, BYTE);                     // Turn the colon and all dots off
         SSserial.print(SScmdReset);                     // Reset the Display
-        SSserial.print(SSdataMenuBrightness);           // print "br" to identify brightness setting
+        SSserial.print(SSdataMenuBrightness);           // Print "br" to identify brightness setting
         if (NewBrightness < 10) SSserial.print("0");    // If NVRAMbrightness is < 10 then print a 0 first
-        SSserial.print(NewBrightness, DEC);             // print the brightness value (in Hex so it fits in 2 digits)
+        SSserial.print(NewBrightness, DEC);             // Print the brightness value (in Hex so it fits in 2 digits)
         while (1) {
-            BTNpollAll();                               // poll the buttons
+            BTNpollAll();                               // Poll the buttons
             if (BTN1flag) {
-                BTN1flag = false;                       // clear the button flag     
+                BTN1flag = false;                       // Clear the button flag     
                 SPKeffect();                            // Click the speaker                                  
                 break;                                  // Button #1 was pressed, break out of the brightness Mode loop     
             }                                                                                                    
             if (BTN2flag) {                             // Button #2 was pressed                                       
-                BTN2flag = false;                       // clear the button flag     
+                BTN2flag = false;                       // Clear the button flag     
                 SPKeffect();                            // Click the speaker                                  
-                NewBrightness++;                        // increment the brightness
+                NewBrightness++;                        // Increment the brightness
                 if (NewBrightness>99) NewBrightness = 1;// If the brightness is more than 2 digits rollover to zero   
                 ScaledBrightness = map(NewBrightness, 1, 99, 1, 254);   // remap the brightness value of 1-99 to 1-254
                 SSsetBrightness(ScaledBrightness);      // Set the brightness using the new value
                 SSserial.print(SScmdReset);             // Reset the Display
-                SSserial.print(SSdataMenuBrightness);   // print "br" to identify brightness setting
+                SSserial.print(SSdataMenuBrightness);   // Print "br" to identify brightness setting
                 if (NewBrightness < 10) SSserial.print("0");// If NVRAMbrightness is < 10 then print a 0 first
-                SSserial.print(NewBrightness, DEC);     // print the brightness value (its 0-99 so it fits in 2 digits)
+                SSserial.print(NewBrightness, DEC);     // Print the brightness value (its 0-99 so it fits in 2 digits)
             }
         }   
         NVRAMbrightness = NewBrightness;                // Set the brightness variable with its new permanent value   
                                                                                                                       
     // MODE = sounds                                                                                                  
         SSserial.print(SScmdReset);                                                                                   
-        SSserial.print(SSdataMenuSound);                // print "Snd" to identify Sound Setting                              
-        SSserial.print(NewSound, DEC);                  // print the Sound Configuration value                                
+        SSserial.print(SSdataMenuSound);                // Print "Snd" to identify Sound Setting                              
+        SSserial.print(NewSound, DEC);                  // Print the Sound Configuration value                                
         while (1) {                                                                                                   
-            BTNpollAll();                               // poll the buttons                                                   
+            BTNpollAll();                               // Poll the buttons                                                   
             if (BTN1flag) {                                                                                           
-                BTN1flag = false;                       // clear the button flag                                              
+                BTN1flag = false;                       // Clear the button flag                                              
                 SPKeffect();                            // Click the speaker                                                  
                 break;                                  // Button #1 was pressed, break out of the sound Mode loop             
             }                                                                                                                 
             if (BTN2flag) {                             // Button #2 was pressed                                               
-                BTN2flag = false;                       // clear the button flag                                              
+                BTN2flag = false;                       // Clear the button flag                                              
                 SPKeffect();                            // Click the speaker                                                  
-                NewSound++;                             // increment the sound setting value                                  
+                NewSound++;                             // Increment the sound setting value                                  
                 if (NewSound>3) NewSound = 0;           // If the sound setting is > 3 then rollover to zero                  
                 SSserial.print(SScmdReset);
-                SSserial.print(SSdataMenuSound);        // print "Snd" to identify Sound Setting 
-                SSserial.print(NewSound, DEC);          // print the Sound Configuration value                   
+                SSserial.print(SSdataMenuSound);        // Print "Snd" to identify Sound Setting 
+                SSserial.print(NewSound, DEC);          // Print the Sound Configuration value                   
             }
         }  
         NVRAMsound = NewSound;                          // Set the sound vsariable to its new permanent value   
                                                                                                                 
     // Finalize function, clear flags and exit                                                                  
-        RTCsetData();                                   // write the new brightness & sound values to NVRAM             
-        SSprintTime(true, false);                       // print the time in 12 hour format (normal format)             
+        RTCsetData();                                   // Write the new brightness & sound values to NVRAM             
+        SSprintTime(true, false);                       // Print the time in 12 hour format (normal format)             
         SPKeffect(1);                                   // Play "acknowledged" sound                                    
         MENUflag = false;                               // Clear the Menu Flag                                          
-        delay(500);                                     // pause for 1/2 a second                                       
+        delay(500);                                     // Pause for 1/2 a second                                       
         
-    // re-attach interrupt for button press to get to menu
+    // Re-attach interrupt for button press to get to menu
         attachInterrupt(1, interruptButtonPress, CHANGE);       
 }
 
@@ -296,25 +296,25 @@ void SSprintTime(boolean AlwaysPrint, boolean TFHtime) {
 
     if (((SSdisplayedHour != RTChour) || (SSdisplayedMinute != RTCminute)) || (AlwaysPrint)) {    // Run if display time is NOT current
         
-        DISPLAYEDhour = RTChour;                        // set value of the hour value we will display
-        if (!TFHtime) {                                 // if NOT in 24-Hour Time then adjust to 12 hour time
-            if (DISPLAYEDhour > 12) DISPLAYEDhour -= 12;// adjust for 12 hour time
-            if (DISPLAYEDhour == 0) DISPLAYEDhour = 12; // if it's zero o'clock, display 12
+        DISPLAYEDhour = RTChour;                        // Set value of the hour value we will display
+        if (!TFHtime) {                                 // If NOT in 24-Hour Time then adjust to 12 hour time
+            if (DISPLAYEDhour > 12) DISPLAYEDhour -= 12;// Adjust for 12 hour time
+            if (DISPLAYEDhour == 0) DISPLAYEDhour = 12; // If it's zero o'clock, display 12
         }
 
-        SSserial.print(SScmdReset);                     // resets the 7-segment display
+        SSserial.print(SScmdReset);                     // Resets the 7-segment display
         SSprintColon();                                 // Toggle the colon on the 7-Segment Display
         if (DISPLAYEDhour < 10) SSserial.print(SSdataBlankDigit); // If the hour is between 1 and 9 then print a space first
         SSserial.print(DISPLAYEDhour, DEC);
         if (RTCminute < 10) SSserial.print("0");        // If the minute is between 1 and 9 then print a 0 first
         SSserial.print(RTCminute, DEC);
 
-        SSdisplayedHour = RTChour;                      // set the hour value displayed
-        SSdisplayedMinute = RTCminute;                  // set the minute value displayed
-        if (!AlwaysPrint) {                             // don't play sounds if it is a forced print
+        SSdisplayedHour = RTChour;                      // Set the hour value displayed
+        SSdisplayedMinute = RTCminute;                  // Set the minute value displayed
+        if (!AlwaysPrint) {                             // Don't play sounds if it is a forced print
             if (RTCminute == 0) {                       // If its the "top of the hour"
-                if (NVRAMsound == 2) SPKeffect();       //  and the sound mode = 2, then tick the speaker
-                else if (NVRAMsound == 3) SPKeffect(3,DISPLAYEDhour);     //  is soundmode = 3, then play the chime once for each hour
+                if (NVRAMsound == 2) SPKeffect();       // And the sound mode = 2, then tick the speaker
+                else if (NVRAMsound == 3) SPKeffect(3,DISPLAYEDhour);     //  Is soundmode = 3, then play the chime once for each hour
             }
         }
     }
@@ -327,7 +327,7 @@ void SSprintTime(boolean AlwaysPrint, boolean TFHtime) {
 }
 
 void SSsetBrightness() {
-    SSsetBrightness(SSdataBrightness);                  // if no parameter passed, use pre-defined constant 
+    SSsetBrightness(SSdataBrightness);                  // If no parameter passed, use pre-defined constant 
 }
 
 void SSsetBrightness (byte brightness) {
@@ -348,7 +348,7 @@ void SSprintColon(boolean AlwaysPrint) {
         #endif
         SSserial.print(SScmdColon);                     // Send Dot Control command to 7-segment display
         SSserial.print(SSdataColon);                    // Send Dot Control data byte to 7-segment display
-        SSdisplayedSecond = RTCsecond;                  // set the second value when the colon was displayed
+        SSdisplayedSecond = RTCsecond;                  // Set the second value when the colon was displayed
     }
     if (AlwaysPrint) {                                  // If always print command was used, print colon but dont toggle it
         SSserial.print(SScmdColon);                     // Send Dot Control command to 7-segment display
@@ -463,9 +463,9 @@ void RTCsetData() {
     // Store variables into RTC NVRAM: SS Brightness, Sound Effect Settings, and Checkbyte
     Wire.beginTransmission(RTCaddress);
         Wire.send(RTCregpointerData);                   // Set the register pointer at 10 (past the time/date variables)
-        Wire.send(convDECtoBCD(NVRAMbrightness));       // write the brightness
-        Wire.send(convDECtoBCD(NVRAMsound));            // write the sound setting
-        Wire.send(convDECtoBCD(RTCcheckbyte));          // write checkbyte of known value
+        Wire.send(convDECtoBCD(NVRAMbrightness));       // Write the brightness
+        Wire.send(convDECtoBCD(NVRAMsound));            // Write the sound setting
+        Wire.send(convDECtoBCD(RTCcheckbyte));          // Write checkbyte of known value
     Wire.endTransmission();
 }
 
@@ -473,7 +473,7 @@ void RTCsetTime() {
     // Check data for validity, then send to DS1307 via I2C
     if ((RTCsecond>=0 && RTCsecond<60) && (RTCminute>=0 && RTCminute<60) && (RTChour>0 && RTChour<=24)) {
         Wire.beginTransmission(RTCaddress);
-            Wire.send(RTCregpointerTime);               // set register pointer to the beginning of the time data
+            Wire.send(RTCregpointerTime);               // Set register pointer to the beginning of the time data
             Wire.send(convDECtoBCD(RTCsecond));         
             Wire.send(convDECtoBCD(RTCminute));
             Wire.send(convDECtoBCD(RTChour));           
@@ -490,27 +490,27 @@ void RTCconfigSqWave() {
     //          RS1/0/Freq = 0/0/1Hz, 0/1/4.096kHz, 1/0/8.192kHz, 1/1/32.768kHz
     //      CR value of 0b00010000 (0x10) = turns on sq. wave with 1Hz output
     Wire.beginTransmission(RTCaddress);
-        Wire.send(RTCregpointerCReg);                   // set register pointer to the Control Register
-        Wire.send(RTCregdataSqWave);                    // send all zero's which will clear all bits
+        Wire.send(RTCregpointerCReg);                   // Set register pointer to the Control Register
+        Wire.send(RTCregdataSqWave);                    // Send all zero's which will clear all bits
     Wire.endTransmission();
 }
 
 void RTCconfigClkEnable() {
     //      Enable the oscillator by clearing the CH Bit of memory address 0
     byte NewSecondValue;
-    NewSecondValue = RTCsecond & (!RTCbitCH);           // clear out CH bit (bit 7)
+    NewSecondValue = RTCsecond & (!RTCbitCH);           // Clear out CH bit (bit 7)
     Wire.beginTransmission(RTCaddress);
-        Wire.send(RTCregpointerTime);                   // set register pointer to the Control Register
-        Wire.send(convDECtoBCD(NewSecondValue));        // send the Control Register Value to turn on the Square Wave
+        Wire.send(RTCregpointerTime);                   // Set register pointer to the Control Register
+        Wire.send(convDECtoBCD(NewSecondValue));        // Send the Control Register Value to turn on the Square Wave
     Wire.endTransmission();
 }
 
 void RTCsetHardcodedTime() {
     Wire.beginTransmission(RTCaddress);
-        Wire.send(RTCregpointerTime);                   // set pointer to location of 1st write
-        Wire.send(convDECtoBCD(00));                    // send Seconds (Also, bit 7 of this memory controls the clock state.  0 starts the clock)
-        Wire.send(convDECtoBCD(00));                    // send Minutes
-        Wire.send(convDECtoBCD(19));                    // send Hours (Also, Bit 6 controls AM/PM setting - also need to change readDateDs1307)
+        Wire.send(RTCregpointerTime);                   // Set pointer to location of 1st write
+        Wire.send(convDECtoBCD(00));                    // Send Seconds (Also, bit 7 of this memory controls the clock state.  0 starts the clock)
+        Wire.send(convDECtoBCD(00));                    // Send Minutes
+        Wire.send(convDECtoBCD(19));                    // Send Hours (Also, Bit 6 controls AM/PM setting - also need to change readDateDs1307)
     Wire.endTransmission();
 }
 
@@ -527,8 +527,8 @@ void SPKeffect(char x)  {
 void SPKeffect(char x, char y) {
     // Plays sound effects based on param passed to it & repeats 'y' times
     // no param/0 = "click", 1 = "acknowledged" tone, 2 = "bootup sound" 
-    if (NVRAMsound == 0) return;                        // if sound setting is set to 0 (no sounds) then return
-    if ((NVRAMsound == 1) and (!MENUflag)) return;      // if sound setting is set to 1 (menu sound only) and not in a menu then return
+    if (NVRAMsound == 0) return;                        // If sound setting is set to 0 (no sounds) then return
+    if ((NVRAMsound == 1) and (!MENUflag)) return;      // If sound setting is set to 1 (menu sound only) and not in a menu then return
    
     for (int i = 1; i <= y; i++) {
    
@@ -558,7 +558,7 @@ void SPKeffect(char x, char y) {
         if (x == 3) {                                   // "Chimes" that repeats 'y' times
             tone(SPKPIN, 523);
             delay(100);
-            noTone(SPKPIN);                             // pause between chimes
+            noTone(SPKPIN);                             // Pause between chimes
             delay(500);
             }
             
@@ -569,21 +569,21 @@ void SPKeffect(char x, char y) {
 void SSanimate() {
     // Initalize the 7-segment display & put on a little show
     char ssPulseDelay = 14;                             // 7-Segment Display Delay
-    SSserial.print(SScmdReset);                         // resets the 7-segment display
+    SSserial.print(SScmdReset);                         // Resets the 7-segment display
     SSserial.print(SScmdColon, BYTE);
     SSserial.print(0x00, BYTE);                         // Turn all dots & colons off
 
-    for (int j = 3; j >= 0; j--) {                      // cycle through all 4 digits, right to left
-        for (int i = 9; i >= 0; i--) {                  // counter containing the digit to display
-            SSserial.print(SScmdReset);                 // clear the display
-            if (j > 0) {                                // dont print leading spaces on left-most digit
-                for (int k = 1; k <= j; k++) {          // loop for the number of spaces needed
-                    SSserial.print(" ");                // print one space
+    for (int j = 3; j >= 0; j--) {                      // Cycle through all 4 digits, right to left
+        for (int i = 9; i >= 0; i--) {                  // Counter containing the digit to display
+            SSserial.print(SScmdReset);                 // Clear the display
+            if (j > 0) {                                // Dont print leading spaces on left-most digit
+                for (int k = 1; k <= j; k++) {          // Loop for the number of spaces needed
+                    SSserial.print(" ");                // Print one space
                 }
             }
-            SSserial.print(i);                          // print counter
-            if (j < 3) {                                // only print trailing 0's on right 3 digits
-                for (int k = 1; k <= (3-j); k++) {      // print (3-j) trailing 0's
+            SSserial.print(i);                          // Print counter
+            if (j < 3) {                                // Only print trailing 0's on right 3 digits
+                for (int k = 1; k <= (3-j); k++) {      // Print (3-j) trailing 0's
                     SSserial.print("0");
                 }
             }
@@ -604,13 +604,13 @@ byte convBCDtoDEC(byte val) {
 
 void PINset() {
     // Setup I2C Bus pins - for RTC comms
-        pinMode(A4, INPUT); digitalWrite(A4, HIGH);     // sets as input & turn on pullup resistor                          
-        pinMode(A4, OUTPUT);                            // now set as output                                                
-        pinMode(A5, INPUT); digitalWrite(A5, HIGH);     // sets as input & turn on pullup resistor                          
-        pinMode(A5, OUTPUT);                            // now set as output                                                
+        pinMode(A4, INPUT); digitalWrite(A4, HIGH);     // Sets as input & turn on pullup resistor                          
+        pinMode(A4, OUTPUT);                            // Now set as output                                                
+        pinMode(A5, INPUT); digitalWrite(A5, HIGH);     // Sets as input & turn on pullup resistor                          
+        pinMode(A5, OUTPUT);                            // Now set as output                                                
     // Setup Softserial pins - for debug UART comms                                                                         
-        pinMode(SSTXPIN, OUTPUT);                       // set 5 as output                                                 
-        pinMode(SSRXPIN, INPUT);                        // not used - the 7-segment display does not send any data back     
+        pinMode(SSTXPIN, OUTPUT);                       // Set 5 as output                                                 
+        pinMode(SSRXPIN, INPUT);                        // Not used - the 7-segment display does not send any data back     
     // Setup input for Square Wave signal from RTC Module  
     //      This must be on an interrupt capable I/O line as it will be used to trigger updates
         pinMode(SQWPIN, INPUT); digitalWrite(SQWPIN, HIGH);
