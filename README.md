@@ -1,5 +1,11 @@
 # Arduino Clock Example Code
 ### Demonstration Code for: I2C, Interrupts, external Header File, Preprocessor Commands: Defines and Conditional Compilation
+[![GitHub issues](https://img.shields.io/github/issues/robertpeteuil/arduino-clock-example.svg)](https://github.com/robertpeteuil/arduino-clock-example)
+[![GitHub release](https://img.shields.io/github/release/robertpeteuil/arduino-clock-example.svg?colorB=2067b8)](https://github.com/robertpeteuil/arduino-clock-example)
+[![language: Arduino](https://img.shields.io/badge/language-C%2B%2B%20%2F%20Arduino-yellow.svg)]()
+[![license](https://img.shields.io/github/license/robertpeteuil/arduino-clock-example.svg?colorB=2067b8)](https://github.com/robertpeteuil/arduino-clock-example)
+
+---
 
 The project is intended to server as a reference and example for:
 - Accessing a module via I2C
