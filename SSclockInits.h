@@ -1,12 +1,20 @@
-/* 7-Segment Display Clock   (azrobbo)
+/* 7-Segment Display Clock
 
-  Current Version
-      1.0.0 - Added to Github (2012)
-      2.0.0 - updated for current Arduino (Jan 2016)
+    Variable Defines
+    Variable Declarations
+    HW Module Specification
+    Conditional Var Declarations by HW Module
 
-  -----------------------------------------------------------------------------------------
+    Copyright 2017 Robert Peteuil 
+
 */
 
+#ifndef SSCLOCKINITS_H_
+#define SSCLOCKINITS_H_
+
+// This check is not really necessary in 2017
+//  it was used when Arduino changed from pre-release to release
+//  as the main definition file changed from "WProgram.h" to "Arduino.h"
 #if defined(ARDUINO) && ARDUINO >= 100
   #include "Arduino.h"
 #else
@@ -15,18 +23,21 @@
 
 #define VERSION 200
 
-// Define hardware module being used - make sure only one is uncommented
-  // Original 7-Segment Display (Pins on sides) - Sparkfun Part # COM-09230
-  //      This device prints '0' - '9' and 'a' - 'f' only; it supports brightness settings, and dot/command control
+
+// DEFINE HARDWARE MODULE USED
+  // Sparkfun's Original 7-Segment Display (Pins on sides) - Sparkfun Part # COM-09230
+  //   This device prints '0' - '9' and 'a' - 'f' only
   // #define SS_HWMOD_ORIGINAL
 
-  // Updated design (pins on top) - Sparkfun Part # COM-09764
+  // Sparkfun's Updated design (pins on top) - Sparkfun Part # COM-09764
   #define SS_HWMOD_UPDATED
 
-// DEBUG MODE SETTING
-  // #define DEBUGMODE
 
-// Pin Definitions - set with defines as they dont change
+// DEBUG MODE SETTING
+  // #define DEBUGMODE    // Un-Flag to turn on debug mode
+
+
+// PIN DEFINITIONS - set with defines as they dont change
   #define SQWPIN 2                              // Square Wave input from RTC Module
   #define BTN1PIN 3                             // Button 1
   #define BTN2PIN 4                             // Button 2
@@ -34,55 +45,61 @@
   #define SSTXPIN 6                             // Comm bus to 7-Seg Display
   #define SPKPIN 7                              // Speaker Pin
 
-// 7-Segment Display Variables that differ based on 7-Seg Module being used
-  #if defined (SS_HWMOD_ORIGINAL)                      // GEN1 values for 7-Segment Display
-    const char SSdataColonOnly = 0b00110000;  // 7-Segment Display colon display data - this variable will always display a colon
-    char SSdataColon = SSdataColonOnly;       // 7-Segment Display colon display data - On GEN1 H/W, this variable remains steady
-    const char SSdataBrightness = 0x18;       // 7-Segment Display brightness level
-    #define SSdataMenuBrightness  "b "        // 7-Segment Display Menu text displayed during setting brightness
-    #define SSdataMenuSound "5  "             // 7-Segment Display Menu text displayed during setting brightness
+
+// 7-SEGMENT DISPLAY VARIABLES - Conditionally Set based on HW Version
+  #if defined (SS_HWMOD_ORIGINAL)             // GEN1 values for 7-Segment Display
+    const char SSdataColonOnly = 0b00110000;      // colon display data
+    char SSdataColon = SSdataColonOnly;           //   On GEN1 - this variable remains steady
+    const char SSdataBrightness = 0x18;           // brightness level
+    #define SSdataMenuBrightness  "b "            // display-text for brightness
+    #define SSdataMenuSound "5  "                 // display-text for sound
   #endif
-  #if defined (SS_HWMOD_UPDATED)                // GEN2 values for 7-Segment Display
-    const char SSdataColonOnly = 0b00010000;  // 7-Segment Display colon display data - this variable will always display a colon
-    char SSdataColon = SSdataColonOnly;       // 7-Segment Display colon display data - this variable gets toggled
-    const byte SSdataBrightness = 0x28;       // 7-Segment Display brightness level
-    #define SSdataMenuBrightness "br"         // 7-Segment Display Menu text displayed during setting brightness
-    #define SSdataMenuSound "snd"             // 7-Segment Display Menu text displayed during setting brightness
+  #if defined (SS_HWMOD_UPDATED)              // GEN2 values for 7-Segment Display
+    const char SSdataColonOnly = 0b00010000;      // colon display data
+    char SSdataColon = SSdataColonOnly;           //   On GEN2 - this variable gets toggled
+    const byte SSdataBrightness = 0x28;           // brightness level
+    #define SSdataMenuBrightness "br"             // display-text for brightness
+    #define SSdataMenuSound "snd"                 // display-text for sound
   #endif
 
-// 7-Segment Display Constants
-  const char SScmdReset = 0x76;                 // 7-Segment Display reset command
-  const char SScmdBrightness = 0x7A;            // 7-Segment Display brightness command
-  const char SSdataBlankDigit = 0x78;           // 7-Segment Display blank digit
-  const byte SScmdColon = 0x77;                 // 7-Segment Display dot control command
+// 7-SEGMENT DISPLAY CONSTANTS
+  const char SScmdReset = 0x76;                 // 7Seg-Disp reset command
+  const char SScmdBrightness = 0x7A;            // 7Seg-Disp brightness command
+  const char SSdataBlankDigit = 0x78;           // 7Seg-Disp blank digit
+  const byte SScmdColon = 0x77;                 // 7Seg-Disp dot control command
 
-// 7-Segment Display Variables
-  char SSdisplayedHour, SSdisplayedMinute;      // holds time value currently displayed
-  char SSdisplayedSecond;                       // holds the second value when the colon last toggled
+// 7-SEGMENT DISPLAY VARIABLES
+  char SSdisplayedHour, SSdisplayedMinute;      // Time value currently displayed
+  char SSdisplayedSecond;                       // Second value when the colon last toggled
   volatile bool SSflagNeedsUpdate = false;      // Flag set by interrupt to update clock
   bool SSflagVisibility = false;                // Flag to blink hours and minutes in set menu
 
-// Button Variables - used for tracking the button states
-  volatile unsigned long BTNdebounce = 75;               // Debounce time for buttons
-  volatile bool BTN1state = false;              // State of Button 1 (Green button - used to set menu mode)
-  volatile bool BTN1flag = false;               // Flag holds debounced value of button 1
-  volatile bool BTN1released = false;           // Flag holds value of button 1 being "released"
-  volatile unsigned long BTN1time = 0;                   // Time Button 1 was toggled
-  bool BTN2state = false;                       // State of Button 2 (Orange Button)
-  bool BTN2flag = false;                        // Flag holds debounced value of button 2
+
+// BUTTON VARIABLES - used for tracking the button states
+  volatile unsigned long BTNdebounce = 75;      // Debounce time for buttons
+  volatile bool BTN1state = false;              // State of Button 1 (sets menu mode)
+  volatile bool BTN1flag = false;               // Debounced value of button 1
+  volatile bool BTN1released = false;           // Value of button 1 being "released"
+  volatile unsigned long BTN1time = 0;          // Time Button 1 was toggled
+  bool BTN2state = false;                       // State of Button 2
+  bool BTN2flag = false;                        // Debounced value of button 2
   long BTN2time = 0;                            // Time Button 2 was toggled
 
-// Menu Variables - used for processing the menu
-  volatile bool MENUflag = false;               // Flag set by interrupt to enter menu mode
 
-// RTC Variables
-  const int RTCaddress = 0b1101000;             // Put I2C address of the DS1307 into the variable we will use
-  const byte RTCregpointerTime = 0x00;          // DS1307 Register pointer to address for time data
-  const byte RTCregpointerData = 0x10;          // DS1307 Register pointer to address for NVRAM data
-  const byte RTCregpointerCReg = 0x07;          // DS1307 Register pointer to address for the control register
-  const byte RTCregdataSqWave = 0b00010000;     // DS1307 Control Register data to enable square wave output
-  const byte RTCcheckbyte = 0x87;               // value stored in NVRAM, used to check for previous initialization
-  const byte RTCbitCH = 0b10000000;             // mask for the CH bit of the clock register
-  char RTCsecond, RTCminute, RTChour;           // holds time data retreived from DS1307
-  byte NVRAMbrightness, NVRAMsound;             // persistent variables stored in DS1307 NVRAM
-  byte NVRAMcheckbyte;                          // variable with known value used to check if NVRAM has been initialized
+// MENU VARIABLES
+  volatile bool MENUflag = false;               // Menu Mode flag - set by interrupt
+
+
+// RTC VARIABLES FOR DS1307
+  const int RTCaddress = 0b1101000;             // I2C address of the DS1307
+  const byte RTCregpointerTime = 0x00;          // Register pointer to time data
+  const byte RTCregpointerData = 0x10;          // Register pointer to NVRAM data
+  const byte RTCregpointerCReg = 0x07;          // Register pointer to control reg
+  const byte RTCregdataSqWave = 0b00010000;     // Ctrl-Reg Bit-Mask to enable sq-wave out
+  const byte RTCcheckbyte = 0x87;               // Value used to check for prior init
+  const byte RTCbitCH = 0b10000000;             // Bit-Mask for the CH bit of the clock reg
+  char RTCsecond, RTCminute, RTChour;           // Time data retreived from DS1307
+  byte NVRAMbrightness, NVRAMsound;             // Persistent values stored in DS1307 NVRAM
+  byte NVRAMcheckbyte;                          // Variable used to check for prior init
+
+#endif  // SSCLOCKINITS_H_
