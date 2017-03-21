@@ -1,28 +1,30 @@
-# Simple Arduino 7-Segment Display Project using DS1307 & Sparkfun 7-Segment Display
+# Arduino Clock Example Code
+### Demonstration Code for: I2C, Interrupts, external Header File, Preprocessor Commands: Defines and Conditional Compilation
 
-This started as a simple project to display the time from a DS1307, that expanded to include  additional functions and HW devices.  Its most useful as a function reference for interacting with different types of hardware devices via different interface methods.
+The project is intended to server as a reference and example for:
+- Accessing a module via I2C
+- Using hardware interrupts and assigning functions for varying parameters
+- Read and debounce button presses via hardware interrupts    
+- Parsing a serial stream to get user data
+- Storing data in non-volatile memory via I2C
+- Including and using an External Header File
+- Using Compiler PreProcessor Commands - Defines, and Conditional Compilation
 
-Basic Clock Features:
+To maximize ease of re-use:
+- The code is broken into discrete functions.
+- The Functions are named by device: 7-Segment-Display, RTC, UART, and Menu.
+- The code is extensively commented to make it easy to re-purpose.  
+
+### Functionality
+
+This project reads the current time from a RTC, displays it on a 7-Segment Display Module, allows external configuration of settings via buttons, and uses sound to provide user feedback.  
+
+Details:
 - Set / Read current time from DS1307 module
 - Displays time on 7-Segment Display
 - Interrupt-driven realtime display of time
 - Outputs sound via small speaker
 - Use Hardware buttons to allow user settings changes  
-
-The code is broken into discrete functions, which are named by device (7-Segment-Display, RTC, UART, Menu).  These functions are extensively commented to make it easy to re-purpose.  Included functions perform the following:
-- Accessing a module via I2C
-- Using square wave pulses to HW trigger interrupts (then used to update display)
-- Using buttons to trigger HW interrupts (to trigger a manu)
-- Debouncing HW buttons
-- Parsing a serial stream to get user data
-- Storing data in non-volatile memory via I2C
-- Settings Menu-Function to allow for change of settings by user with minimal hardware buttons
-
-**2016 Compatibility Update:**
-- Updated version 2.0.0 works on current Arduino IDE as of Jan 2016
-- Main program now titled 'SSclock.ino'
-- Old Version (1.0.0) was written in 2012 on Arduino build 23
-- The updates to allow use of current Arduino IDE included changing I2C commands, some variable types, and some serial commands 
 
 ### FILES INCLUDED:
 
