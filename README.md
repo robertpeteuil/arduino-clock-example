@@ -1,5 +1,6 @@
 # Arduino Clock Example Code
 ### Demonstration Code for: I2C, Interrupts, external Header File, Preprocessor Commands: Defines and Conditional Compilation
+[![Code Climate](https://codeclimate.com/github/robertpeteuil/arduino-clock-example/badges/gpa.svg)](https://codeclimate.com/github/robertpeteuil/arduino-clock-example)
 [![GitHub issues](https://img.shields.io/github/issues/robertpeteuil/arduino-clock-example.svg)](https://github.com/robertpeteuil/arduino-clock-example)
 [![GitHub release](https://img.shields.io/github/release/robertpeteuil/arduino-clock-example.svg?colorB=2067b8)](https://github.com/robertpeteuil/arduino-clock-example)
 [![language: Arduino](https://img.shields.io/badge/language-C%2B%2B%20%2F%20Arduino-yellow.svg)]()
