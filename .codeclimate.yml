@@ -3,5 +3,9 @@ engines:
   fixme:
     enabled: true
 ratings:
-  paths: []
-exclude_paths: []
+  paths:
+  - "SSclock.ino"
+  - "SSclockInits.h"
+exclude_paths:
+- "datasheets/"
+- "photos/"
