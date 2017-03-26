@@ -5,28 +5,18 @@
     HW Module Specification
     Conditional Var Declarations by HW Module
 
-    Copyright 2017 Robert Peteuil 
+    Copyright 2017 Robert Peteuil
 
 */
 
 #ifndef SSCLOCKINITS_H_
 #define SSCLOCKINITS_H_
 
-// This check is not really necessary in 2017
-//  it was used when Arduino changed from pre-release to release
-//  as the main definition file changed from "WProgram.h" to "Arduino.h"
-#if defined(ARDUINO) && ARDUINO >= 100
-  #include "Arduino.h"
-#else
-  #include "WProgram.h"
-#endif
-
 #define VERSION 200
 
 
 // DEFINE HARDWARE MODULE USED
   // Sparkfun's Original 7-Segment Display (Pins on sides) - Sparkfun Part # COM-09230
-  //   This device prints '0' - '9' and 'a' - 'f' only
   // #define SS_HWMOD_ORIGINAL
 
   // Sparkfun's Updated design (pins on top) - Sparkfun Part # COM-09764
