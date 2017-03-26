@@ -11,11 +11,11 @@
  */
 
 
-
+#include "Arduino.h"
 #include "SSclockInits.h"                               // var declares and defines
 #include <Wire.h>                                       // I2C used with DS1307 RTC
-#include <AltSoftSerial.h>                              // Software Serial Library
-AltSoftSerial SSserial(SSRXPIN, SSTXPIN);               //   Connect to 7-Segment Display
+#include <SoftwareSerial.h>                              // Software Serial Library
+SoftwareSerial SSserial(SSRXPIN, SSTXPIN);               //   Connect to 7-Segment Display
 
 
 
@@ -282,8 +282,8 @@ void BTNpollAll() {
       }
   } else {
     BTN2state = false;                             // If button unpressed clear flag
+  }
 }
-
 
 
 // Call the main function, but passes along the optional parameter
