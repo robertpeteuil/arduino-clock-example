@@ -3,7 +3,8 @@
 [![Code Climate](https://codeclimate.com/github/robertpeteuil/arduino-clock-example/badges/gpa.svg)](https://codeclimate.com/github/robertpeteuil/arduino-clock-example)
 [![GitHub issues](https://img.shields.io/github/issues/robertpeteuil/arduino-clock-example.svg)](https://github.com/robertpeteuil/arduino-clock-example)
 [![GitHub release](https://img.shields.io/github/release/robertpeteuil/arduino-clock-example.svg?colorB=2067b8)](https://github.com/robertpeteuil/arduino-clock-example)
-[![language: Arduino](https://img.shields.io/badge/language-C%2B%2B%20%2F%20Arduino-yellow.svg)]()
+[![lang](https://img.shields.io/badge/language-C%2B%2B-f34b7d.svg?style=flat-square)]()
+[![lang](https://img.shields.io/badge/language-Arduino-bd79d1.svg?style=flat-square)]()
 [![license](https://img.shields.io/github/license/robertpeteuil/arduino-clock-example.svg?colorB=2067b8)](https://github.com/robertpeteuil/arduino-clock-example)
 
 ---
