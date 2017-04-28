@@ -3,7 +3,8 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f5e8c7e780fd463cb2cc1d09e2fe4358)](https://www.codacy.com/app/robertpeteuil/arduino-clock-example?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=robertpeteuil/arduino-clock-example&amp;utm_campaign=Badge_Grade)
 [![GitHub issues](https://img.shields.io/github/issues/robertpeteuil/arduino-clock-example.svg)](https://github.com/robertpeteuil/arduino-clock-example)
 [![GitHub release](https://img.shields.io/github/release/robertpeteuil/arduino-clock-example.svg?colorB=2067b8)](https://github.com/robertpeteuil/arduino-clock-example)
-[![language: Arduino](https://img.shields.io/badge/language-C%2B%2B%20%2F%20Arduino-yellow.svg)]()
+[![lang](https://img.shields.io/badge/language-C%2B%2B-f34b7d.svg?style=flat-square)](https://github.com/robertpeteuil/arduino-clock-example)
+[![lang](https://img.shields.io/badge/language-Arduino-bd79d1.svg?style=flat-square)](https://github.com/robertpeteuil/arduino-clock-example)
 [![license](https://img.shields.io/github/license/robertpeteuil/arduino-clock-example.svg?colorB=2067b8)](https://github.com/robertpeteuil/arduino-clock-example)
 
 ---
